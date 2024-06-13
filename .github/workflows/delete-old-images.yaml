@@ -21,3 +21,4 @@ jobs:
           owner: ${{ github.repository_owner }}
           name: ${{ env.REPO_NAME }}
           token: ${{ github.token }}
+          untagged-keep-latest: 0
