@@ -25,6 +25,7 @@ jobs:
           tags: v1 ${{ github.sha }}
           containerfiles: |
             ./builder-base/Containerfile
+          oci: true
 
       - name: Push Image to GHCR
         uses: ./
