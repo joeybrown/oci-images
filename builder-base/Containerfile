@@ -1,5 +1,5 @@
 # Define the base image
-FROM ubuntu:noble
+FROM ubuntu:jammy
 
 # Install packages that we want to make available at build time
 RUN apt-get update && \
@@ -21,4 +21,4 @@ USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
 # Set required CNB target information
 LABEL io.buildpacks.base.distro.name="ubuntu"
-LABEL io.buildpacks.base.distro.version="24.04"
+LABEL io.buildpacks.base.distro.version="22.04"
