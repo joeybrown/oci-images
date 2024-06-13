@@ -4,7 +4,7 @@ on:
   - workflow_dispatch
 
 env:
-  IMAGE_NAME: joey-builder
+  REPO_NAME: joey-builder
 
 permissions:
   packages: write
@@ -16,7 +16,8 @@ jobs:
 
     steps:
       - name: delete
-        uses: snok/container-retention-policy@v2
+        uses: bots-house/ghcr-delete-image-action@v1.1.0
         with:
-          image-names: ${{ env.IMAGE_NAME }}
+          owner: ${{ github.repository_owner }}
+          name: ${{ env.REPO_NAME }}
           token: ${{ github.token }}
