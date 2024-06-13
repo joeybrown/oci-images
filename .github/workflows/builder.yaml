@@ -1,8 +1,8 @@
-name: Create the Builder Image
+name: Create the Builder Base Image
 on:
   - workflow_dispatch
 env:
-  IMAGE_NAME: joey-builder
+  IMAGE_NAME: joey-builder-base
   IMAGE_TAGS: v1 ${{ github.sha }}
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   REGISTRY_USER: ${{ github.actor }}
@@ -17,16 +17,16 @@ jobs:
       - name: Checkout the Repository
         uses: actions/checkout@v4
 
-      - name: Buildah Action
+      - name: Build Image
         id: build_image
         uses: redhat-actions/buildah-build@v2
         with:
           image: joey-builder
           tags: v1 ${{ github.sha }}
           containerfiles: |
-            ./builder/Containerfile
+            ./builder-base/Containerfile
 
-      - name: Push To GHCR
+      - name: Push Image to GHCR
         uses: ./
         id: push
         with:
