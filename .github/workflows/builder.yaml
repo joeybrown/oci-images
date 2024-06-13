@@ -1,0 +1,29 @@
+name: Create the Builder Image
+
+on:
+  - workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build the Builder Image
+    steps:
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+
+      - name: Clone the Repository
+        uses: actions/checkout@v2
+
+      - name: Build the Builder Image
+        run: |
+          podman build -t joey-builder:latest -f builder/Containerfile .
+
+      - name: Push the Builder Image to github registry
+        run: |
+          podman push joey-builder:latest ghcr.io/joeybrown/joey-builder:latest
+
+#Future Improvements:
+#  - instead of runs-on ubuntu-lates, create a custom container with podman installed already.
+#  - add a version or something via a repository tag
