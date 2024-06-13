@@ -1,29 +1,43 @@
-name: Create the Builder Image
-
+name: Create the Builder Base Image
 on:
   - workflow_dispatch
+env:
+  IMAGE_NAME: joey-builder-base
+  IMAGE_TAGS: v1 ${{ github.sha }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Build the Builder Image
+  push-ghcr:
+    name: Build and push image
+    runs-on: ubuntu-22.04
+
     steps:
-      - name: Install Podman
+      - name: Checkout the Repository
+        uses: actions/checkout@v4
+
+      - name: Build Image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: joey-builder
+          tags: v1 ${{ github.sha }}
+          containerfiles: |
+            ./builder-base/Containerfile
+
+      - name: Push Image to GHCR
+        uses: ./
+        id: push
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          tags: ${{ steps.build_image.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+          extra-args: |
+            --disable-content-trust
+
+      - name: Echo outputs
         run: |
-          sudo apt-get update
-          sudo apt-get install -y podman
-
-      - name: Clone the Repository
-        uses: actions/checkout@v2
-
-      - name: Build the Builder Image
-        run: |
-          podman build -t joey-builder:latest -f builder/Containerfile .
-
-      - name: Push the Builder Image to github registry
-        run: |
-          podman push joey-builder:latest ghcr.io/joeybrown/joey-builder:latest
-
-#Future Improvements:
-#  - instead of runs-on ubuntu-lates, create a custom container with podman installed already.
-#  - add a version or something via a repository tag
+          echo "${{ toJSON(steps.push.outputs) }}"

@@ -7,14 +7,15 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/* \
 
 # Set required CNB user information
+ARG wtf=1000
 ARG cnb_uid=1000
 ARG cnb_gid=1000
 ENV CNB_USER_ID=${cnb_uid}
 ENV CNB_GROUP_ID=${cnb_gid}
 
 # Create user and group
-RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
-  useradd --uid ${CNB_USER_ID} --gid ${CNB_GROUP_ID} -m -s /bin/bash cnb \
+RUN groupadd cnb --gid ${CNB_GROUP_ID}
+RUN useradd --uid ${CNB_USER_ID} --gid ${CNB_GROUP_ID} -m -s /bin/bash cnb \
 
 # Set user and group
 USER ${CNB_USER_ID}:${CNB_GROUP_ID}
