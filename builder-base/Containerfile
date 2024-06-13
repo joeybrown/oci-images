@@ -1,5 +1,5 @@
 # Define the base image
-FROM ubuntu:jammy
+FROM ubuntu:noble
 
 # Install packages that we want to make available at build time
 RUN apt-get update && \
@@ -20,7 +20,5 @@ RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
 USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
 # Set required CNB target information
-# todo
-LABEL io.buildpacks.base.distro.name="your distro name"
-# todo
-LABEL io.buildpacks.base.distro.version="your distro version"
+LABEL io.buildpacks.base.distro.name="ubuntu"
+LABEL io.buildpacks.base.distro.version="24.04"
